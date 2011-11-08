@@ -77,9 +77,9 @@ end
 # Setting Population Builder
 population_builder = Genetica::PopulationBuilder.new
 population_builder.elitism = true                                      # Activating elitism in population selection
-population_builder.size = 4                                            # Population size
+population_builder.size = 100                                          # Population size
 population_builder.crossover_probability = 0.7                         # Crossover rate
-population_builder.mutation_probability = 0.001                        # Mutation rate
+population_builder.mutation_probability = 0.005                        # Mutation rate
 population_builder.chromosome_length = CHROMOSOME_LENGTH               # Chromosome length
 population_builder.chromosome_alleles = [0, 1]                         # Chromosome alleles
 population_builder.fitness_function = method(:fitness_image_distance)  # Fitness Function
@@ -89,7 +89,7 @@ population = population_builder.population
 
 # Running
 loop do
-  population.run generations=6
+  population.run generations=1
 
   # Saving best Chromosome as an image
   best_image = render_chromosome population.best_chromosome
