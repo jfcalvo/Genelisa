@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'genetica'
 require 'RMagick'
 
@@ -17,7 +19,7 @@ LENGTH_ALPHA  = 8
 LENGTH_COLOR  = LENGTH_RED + LENGTH_GREEN + LENGTH_BLUE + LENGTH_ALPHA
 LENGTH_CIRCLE = LENGTH_WIDTH + LENGTH_HEIGHT + LENGTH_RADIUS + LENGTH_COLOR
 
-NUMBER_CIRCLES = 50
+NUMBER_CIRCLES = 20
 CHROMOSOME_LENGTH = NUMBER_CIRCLES * LENGTH_CIRCLE
 
 def image_distance(image1, image2)
@@ -74,9 +76,10 @@ end
 
 # Setting Population Builder
 population_builder = Genetica::PopulationBuilder.new
-population_builder.size = 10                                           # Population size
+population_builder.elitism = true                                      # Activating elitism in population selection
+population_builder.size = 4                                            # Population size
 population_builder.crossover_probability = 0.7                         # Crossover rate
-population_builder.mutation_probability = 0.01                         # Mutation rate
+population_builder.mutation_probability = 0.001                        # Mutation rate
 population_builder.chromosome_length = CHROMOSOME_LENGTH               # Chromosome length
 population_builder.chromosome_alleles = [0, 1]                         # Chromosome alleles
 population_builder.fitness_function = method(:fitness_image_distance)  # Fitness Function
@@ -86,7 +89,7 @@ population = population_builder.population
 
 # Running
 loop do
-  population.run generations=1
+  population.run generations=6
 
   # Saving best Chromosome as an image
   best_image = render_chromosome population.best_chromosome
