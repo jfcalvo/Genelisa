@@ -1,14 +1,12 @@
 #!/usr/bin/env ruby
-
 require 'genetica'
 require 'RMagick'
 
 SERIALIZED_FILE = 'population.marshal'
 
 class GenelisaPopulation < Genetica::Population
-
   # Source image
-  SOURCE_IMAGE = Magick::Image.read('monalisa_400.png').first
+  SOURCE_IMAGE = Magick::Image.read('monalisa_800.png').first
 
   # Chromosome length measured in bits
   LENGTH_WIDTH  = SOURCE_IMAGE.columns.to_s(2).size
@@ -26,7 +24,7 @@ class GenelisaPopulation < Genetica::Population
   CHROMOSOME_LENGTH = NUMBER_CIRCLES * LENGTH_CIRCLE
 
   def fitness(chromosome)
-    return 1 / (self.image_distance SOURCE_IMAGE, self.render_chromosome(chromosome)).to_f  
+    return 1 / (self.image_distance SOURCE_IMAGE, self.render_chromosome(chromosome)).to_f
   end
 
   def run
@@ -38,13 +36,13 @@ class GenelisaPopulation < Genetica::Population
       best_image.write("results/generation_#{self.generation}.png")
 
       # Show some information about the population
-      puts "generation: #{self.generation}, best_fitness: #{self.best_fitness}, average_fitness: #{self.average_fitness}"
+      puts "generation: #{self.generation}, best_fitness: #{self.best_fitness.round(5)}, average_fitness: #{self.average_fitness.round(5)}"
     end
   end
-  
+
   def image_distance(image1, image2)
     total_distance = 0
-    
+
     for x in 0...image1.columns
       for y in 0...image1.rows
         c1 = image1.pixel_color x, y
@@ -63,7 +61,7 @@ class GenelisaPopulation < Genetica::Population
       end
     end
 
-    return total_distance
+    total_distance
   end
 
   def render_chromosome(chromosome)
@@ -87,9 +85,8 @@ class GenelisaPopulation < Genetica::Population
       circle.draw(render_image)
     end
 
-    return render_image
+    render_image
   end
-
 end
 
 
