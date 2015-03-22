@@ -6,7 +6,7 @@ SERIALIZED_FILE = 'population.marshal'
 
 class GenelisaPopulation < Genetica::Population
   # Source image
-  SOURCE_IMAGE = Magick::Image.read('monalisa_800.png').first
+  SOURCE_IMAGE = Magick::Image.read('monalisa_400.png').first
 
   # Chromosome length measured in bits
   LENGTH_WIDTH  = SOURCE_IMAGE.columns.to_s(2).size
@@ -24,19 +24,19 @@ class GenelisaPopulation < Genetica::Population
   CHROMOSOME_LENGTH = NUMBER_CIRCLES * LENGTH_CIRCLE
 
   def fitness(chromosome)
-    return 1 / (self.image_distance SOURCE_IMAGE, self.render_chromosome(chromosome)).to_f
+    1 / image_distance(SOURCE_IMAGE, render_chromosome(chromosome)).to_f
   end
 
   def run
     loop do
-      super generations=1
+      super generations = 1
 
       # Saving best Chromosome as an image
-      best_image = render_chromosome self.best_chromosome
-      best_image.write("results/generation_#{self.generation}.png")
+      best_image = render_chromosome(best_chromosome)
+      best_image.write("results/generation_#{generation}.png")
 
       # Show some information about the population
-      puts "generation: #{self.generation}, best_fitness: #{self.best_fitness.round(5)}, average_fitness: #{self.average_fitness.round(5)}"
+      puts "generation: #{generation}, best_fitness: #{best_fitness.round(5)}, average_fitness: #{average_fitness.round(5)}"
     end
   end
 
@@ -97,10 +97,10 @@ else
   # Setting Population Builder
   population_builder = Genetica::PopulationBuilder.new
   population_builder.population_class = GenelisaPopulation # Set the class of the Population to build
-  population_builder.elitism = 2                           # Activating elitism in population selection
-  population_builder.size = 10                             # Population size
-  population_builder.crossover_probability = 0.7           # Crossover rate
-  population_builder.mutation_probability = 0.002          # Mutation rate
+  population_builder.elitism = 1                           # Activating elitism in population selection
+  population_builder.size = 20                             # Population size
+  population_builder.crossover_probability = 0.4           # Crossover rate
+  population_builder.mutation_probability = 0.001          # Mutation rate
   population_builder.chromosome_length = GenelisaPopulation::CHROMOSOME_LENGTH # Chromosome length
   population_builder.chromosome_alleles = [0, 1]           # Chromosome alleles
 
@@ -109,11 +109,12 @@ else
 end
 
 # Runn Population
-trap("SIGINT") { throw :ctrl_c }
+trap('SIGINT') { throw :ctrl_c }
 
 catch :ctrl_c do
   begin
-    puts "Running population..."
+    puts 'Running population...'
+
     population.run
   ensure
     # Serializating Population
@@ -121,6 +122,7 @@ catch :ctrl_c do
     serialization_file = File.new SERIALIZED_FILE, 'w'
     serialization_file.write serialization
     serialization_file.close
+
     puts "Writed #{SERIALIZED_FILE} to disk"
   end
 end
